@@ -6,10 +6,19 @@
 
 An intelligent IoT solar tracking system that optimizes solar energy production by dynamically adjusting panel orientation based on real-time light sensor data and environmental conditions.
 
-![Solar Tracking System](docs/images/system-overview.png)
+**Tags:** `IoT` `ESP32` `Solar-Tracking` `Embedded-Systems` `Arduino` `Real-Time` `Sensors` `Motor-Control` `Linux-Driver` `Web-Server` `RTOS`
+
+## System Diagrams
+
+### BDD (Block Definition Diagram)
+![BDD Diagram](docs/images/bdd-diagram.png)
+
+### Domain Diagram
+![Domain Diagram](docs/images/domain-diagram.png)
 
 ## Table of Contents
 
+- [System Diagrams](#system-diagrams)
 - [Overview](#overview)
 - [Features](#features)
 - [System Architecture](#system-architecture)
