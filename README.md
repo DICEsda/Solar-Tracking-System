@@ -8,25 +8,6 @@ An intelligent IoT solar tracking system that optimizes solar energy production 
 
 **Tags:** `IoT` `ESP32` `Solar-Tracking` `Embedded-Systems` `Arduino` `Real-Time` `Sensors` `Motor-Control` `Linux-Driver` `Web-Server` `RTOS`
 
-## System Diagrams
-
-### BDD (Block Definition Diagram)
-![BDD Diagram](docs/images/bdd-diagram.png)
-
-### Domain Diagram
-![Domain Diagram](docs/images/domain-diagram.png)
-
-## Table of Contents
-
-- [System Diagrams](#system-diagrams)
-- [Overview](#overview)
-- [Features](#features)
-- [System Architecture](#system-architecture)
-- [Hardware Requirements](#hardware-requirements)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Project Structure](#project-structure)
-
 ## Overview
 
 The IoT-Based Dual-Axis Solar Tracking System (IoT-DASTS) is an embedded systems project designed to maximize solar panel efficiency through intelligent sun tracking. The system uses four light sensors positioned in cardinal directions to determine optimal panel orientation, adjusting both horizontal (stepper motor) and vertical (servo motor) axes in real-time.
@@ -64,17 +45,14 @@ The IoT-Based Dual-Axis Solar Tracking System (IoT-DASTS) is an embedded systems
 
 ![Domain Model](docs/images/domain-diagram.png)
 
-## Hardware Requirements
+## Hardware
 
 ### ESP32 Module
 - **Board**: LilyGO T-Display ESP32 (or compatible ESP32-WROOM-32)
-- **Flash**: 4MB
-- **RAM**: 520KB
-- **WiFi**: 802.11 b/g/n
 
 ### Sensors
 - **HTU21D**: I2C Temperature and Humidity Sensor
-- **Light Sensors**: 4x Analog photoresistors/photodiodes
+- **Light Sensors**: 4x Analog photoresistors/photodiodes (Used for directional solar tracking)
   - GPIO32 (Left)
   - GPIO33 (Right)
   - GPIO39 (Up)
@@ -82,31 +60,57 @@ The IoT-Based Dual-Axis Solar Tracking System (IoT-DASTS) is an embedded systems
 
 ### Actuators
 - **Servo Motor**: Standard 50Hz PWM servo (0-180°)
-- **Stepper Motor**: 28BYJ-48 or similar 4-phase unipolar stepper
+- **Stepper Motor**: 4-phase unipolar stepper
 
-### Linux System (Optional)
-- **Raspberry Pi 3/4** (or compatible ARM-based Linux system)
-- **Kernel Version**: 5.4.83 or compatible
+### Linux System
+- **Raspberry Pi 4** (or compatible ARM-based Linux system)
 
 ### Display
-- **TFT Display**: 135x240 ST7789V (integrated with LilyGO T-Display)
+- **TFT Display**: 135x240 ST7789V (integrated with ESP32 LilyGO T-Display)
 
-## Installation
+## Project Structure
 
-### 1. Clone the Repository
-
-```bash
-git clone https://github.com/yourusername/solar-tracking-system.git
-cd solar-tracking-system
+```
+solar-tracking-system/
+├── esp32/                          # ESP32 firmware
+│   ├── include/                    # Header files
+│   │   ├── DisplayHandler.h        # TFT display management
+│   │   ├── Endpoints.h             # Web server HTML & endpoints
+│   │   ├── HTU.h                   # Temperature/humidity sensor
+│   │   ├── Lys.h                   # Light sensor management
+│   │   └── Wifi_Config.h           # WiFi configuration
+│   ├── lib/                        # External libraries
+│   │   └── HTU21D_Sensor_Library-1.0.2/
+│   ├── src/                        # Source code
+│   │   └── main.cpp                # Main application
+│   ├── platformio.ini              # PlatformIO configuration
+│   └── .gitignore
+│
+├── linux-driver/                   # Linux kernel driver
+│   ├── Servo-Stepper.c             # Kernel module source
+│   ├── Servo-Stepper.dts           # Device tree source
+│   ├── main.c                      # User-space test program
+│   ├── Makefile                    # Build configuration
+│   └── README.md                   # Driver documentation
+│
+├── docs/                           # Documentation
+│   ├── images/                     # Diagrams and photos
+│   ├── architecture.md             # System architecture details
+│   └── api-reference.md            # API documentation
+│
+├── .gitignore                      # Git ignore file
+├── LICENSE                         # MIT License
+└── README.md                       # This file
 ```
 
+## Setup
 ### 2. ESP32 Setup
 
 #### Configure WiFi Credentials
 Edit `esp32/include/Wifi_Config.h` or modify the main.cpp setup:
 
 ```cpp
-HandleWiFi_init("YourSSID", "YourPassword");
+HandleWiFi_init("SSID", "Password");
 ```
 
 #### Build and Upload with PlatformIO
@@ -117,9 +121,9 @@ pio run --target upload
 pio device monitor
 ```
 
-Or use PlatformIO IDE in VSCode.
+Better to use PlatformIO IDE in VSCode.
 
-### 3. Linux Driver Setup (Optional)
+### 3. Linux Driver Setup
 
 #### Prerequisites
 Install kernel headers and build tools:
@@ -185,41 +189,6 @@ The TFT display shows:
 | `/humidity` | GET | Current humidity (%) |
 | `/graph_Temp` | GET | Temperature data for graphing |
 | `/graph_Humidity` | GET | Humidity data for graphing |
-
-## Project Structure
-
-```
-solar-tracking-system/
-├── esp32/                          # ESP32 firmware
-│   ├── include/                    # Header files
-│   │   ├── DisplayHandler.h        # TFT display management
-│   │   ├── Endpoints.h             # Web server HTML & endpoints
-│   │   ├── HTU.h                   # Temperature/humidity sensor
-│   │   ├── Lys.h                   # Light sensor management
-│   │   └── Wifi_Config.h           # WiFi configuration
-│   ├── lib/                        # External libraries
-│   │   └── HTU21D_Sensor_Library-1.0.2/
-│   ├── src/                        # Source code
-│   │   └── main.cpp                # Main application
-│   ├── platformio.ini              # PlatformIO configuration
-│   └── .gitignore
-│
-├── linux-driver/                   # Linux kernel driver
-│   ├── Servo-Stepper.c             # Kernel module source
-│   ├── Servo-Stepper.dts           # Device tree source
-│   ├── main.c                      # User-space test program
-│   ├── Makefile                    # Build configuration
-│   └── README.md                   # Driver documentation
-│
-├── docs/                           # Documentation
-│   ├── images/                     # Diagrams and photos
-│   ├── architecture.md             # System architecture details
-│   └── api-reference.md            # API documentation
-│
-├── .gitignore                      # Git ignore file
-├── LICENSE                         # MIT License
-└── README.md                       # This file
-```
 
 ## Pin Configuration
 
